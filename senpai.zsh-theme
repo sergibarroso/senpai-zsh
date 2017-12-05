@@ -4,7 +4,7 @@
 # MIT License
 
 k8s_info() {
-  if [ -f ~/.kube/config ]; then
+  if [ -f "$HOME/.kube/config" ]; then
     k8s_context=$(awk '/current-context/{print $2}' $HOME/.kube/config)
     if [ ! -z ${k8s_context} ]; then
       echo " %F{74}⎈ ${k8s_context}%f"
@@ -15,6 +15,25 @@ k8s_info() {
 aws_info() {
   if [ ! -z ${AWS_PROFILE} ]; then
     echo " %F{214}ⓦ ${AWS_PROFILE}%f"
+  fi
+}
+
+azure_info() {
+  if [ -f "$HOME/.azure/config" ]; then
+    azure_cloud=$(awk '/name/{print tolower($3)}' $HOME/.azure/config)
+    if [ ! -z ${azure_cloud} ]; then
+      echo " %F{45}ⓐ ${azure_cloud}%f"
+    fi
+  fi
+}
+
+gcp_info() {
+  if [ -f "$HOME/.config/gcloud/active_config" ]; then
+    gcp_profile=$(cat $HOME/.config/gcloud/active_config)
+    gcp_project=$(awk '/project/{print $3}' $HOME/.config/gcloud/configurations/config_$gcp_profile)
+    if [ ! -z ${gcp_project} ]; then
+      echo " %F{34}ⓖ ${gcp_project}%f"
+    fi
   fi
 }
 
@@ -83,7 +102,7 @@ prompt_senpai_setup() {
   zstyle ':zim:git-info:indexed' format "${green}●"
   zstyle ':zim:git-info:untracked' format "${red}●"
   zstyle ':zim:git-info:keys' format 'prompt' "${white}(%b%c%I%i%u%f)%s"
-  PROMPT="${brown}%n%f in ${blue}%~%f\$(prompt_senpai_git)\$(prompt_senpai_virtualenv)\$(k8s_info)\$(aws_info) %(!.#.$) "
+  PROMPT="${brown}%n%f in ${blue}%~%f\$(prompt_senpai_git)\$(prompt_senpai_virtualenv)\$(k8s_info)\$(aws_info)\$(gcp_info)\$(azure_info) %(!.#.$) "
   RPROMPT=''
 }
 

@@ -37,7 +37,13 @@ You then need to select this theme in your ~/.zimrc:
 
 ## ToDo
 - Add color scheme to white console
+- Add modules enable/disable through config file and/or env vars
 
 ## Changelog
+
+### v0.2
+- Added GCP support
+- Added Azure Support
+
 ### v0.1
 - Initial release
