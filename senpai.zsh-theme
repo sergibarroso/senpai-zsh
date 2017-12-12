@@ -37,6 +37,17 @@ gcp_info() {
   fi
 }
 
+define_var() {
+  local varname="$1"
+  typeset -p "$varname" > /dev/null 2>&1
+}
+
+set_default() {
+  local varname="$1"
+  local default_value="$2"
+  define_var "$varname"  || typeset -g "$varname"="$default_value"
+}
+
 prompt_senpai_git() {
   [[ -n ${git_info} ]] && print -n " ${(e)git_info[prompt]}"
 }
@@ -50,7 +61,16 @@ prompt_senpai_precmd() {
 }
 
 prompt_senpai_setup() {
+  
+  # Set default values
   [[ -n ${VIRTUAL_ENV} ]] && export VIRTUAL_ENV_DISABLE_PROMPT=1
+  set_default SENPAI_SHOW_USER  true
+  set_default SENPAI_SHOW_PATH  true
+  set_default SENPAI_SHOW_GIT   true
+  set_default SENPAI_SHOW_K8S   true
+  set_default SENPAI_SHOW_AWS   true
+  set_default SENPAI_SHOW_GCP   true
+  set_default SENPAI_SHOW_AZURE true
 
   local black
   local blue
@@ -102,7 +122,55 @@ prompt_senpai_setup() {
   zstyle ':zim:git-info:indexed' format "${green}●"
   zstyle ':zim:git-info:untracked' format "${red}●"
   zstyle ':zim:git-info:keys' format 'prompt' "${white}(%b%c%I%i%u%f)%s"
-  PROMPT="${brown}%n%f in ${blue}%~%f\$(prompt_senpai_git)\$(prompt_senpai_virtualenv)\$(k8s_info)\$(aws_info)\$(gcp_info)\$(azure_info) %(!.#.$) "
+
+  # Init PROMPT
+  PROMPT=""
+
+  # Build prompt based on user settings
+  # Do not print user if it is disabled
+	if [[ $SENPAI_SHOW_USER == true ]]; then
+		PROMPT+="${brown}%n%f"
+	fi
+
+  # Do not print path if it is disabled
+	if [[ $SENPAI_SHOW_USER == true ]] && [[ $SENPAI_SHOW_PATH == true ]]; then
+		PROMPT+=" in ${blue}%~%f"
+	elif [[ $SENPAI_SHOW_PATH == true ]]; then
+    PROMPT+="${blue}%~%f"
+  fi
+
+  # Do not print git status if it is disabled
+	if [[ $SENPAI_SHOW_GIT == true ]]; then
+		PROMPT+="\$(prompt_senpai_git)"
+	fi
+
+  # Do not print virtual env if it is disabled
+	if [[ $SENPAI_SHOW_VIRT == true ]]; then
+		PROMPT+="\$(prompt_senpai_virtualenv)"
+	fi
+
+  # Do not print virtual env if it is disabled
+	if [[ $SENPAI_SHOW_K8S == true ]]; then
+		PROMPT+="\$(k8s_info)"
+	fi
+
+  # Do not print virtual env if it is disabled
+	if [[ $SENPAI_SHOW_AWS == true ]]; then
+		PROMPT+="\$(aws_info)"
+	fi
+
+  # Do not print virtual env if it is disabled
+	if [[ $SENPAI_SHOW_GCP == true ]]; then
+		PROMPT+="\$(gcp_info)"
+	fi
+
+  # Do not print virtual env if it is disabled
+	if [[ $SENPAI_SHOW_AZURE == true ]]; then
+		PROMPT+="\$(azure_info)"
+	fi
+  
+  # Add the final prompt
+  PROMPT+=" %(?.%F{white}.%F{red})❯%f "
   RPROMPT=''
 }
 
