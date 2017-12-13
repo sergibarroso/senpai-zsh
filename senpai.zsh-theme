@@ -60,10 +60,15 @@ prompt_senpai_precmd() {
   (( ${+functions[git-info]} )) && git-info
 }
 
+prompt_senpai_time() {
+  print -n "[%F{white}%*] "
+}
+
 prompt_senpai_setup() {
   
   # Set default values
   [[ -n ${VIRTUAL_ENV} ]] && export VIRTUAL_ENV_DISABLE_PROMPT=1
+  set_default SENPAI_SHOW_TIME  true
   set_default SENPAI_SHOW_USER  true
   set_default SENPAI_SHOW_PATH  true
   set_default SENPAI_SHOW_GIT   true
@@ -127,6 +132,11 @@ prompt_senpai_setup() {
   PROMPT=""
 
   # Build prompt based on user settings
+  # Do not print timestamp if it is disabled
+	if [[ $SENPAI_SHOW_TIME == true ]]; then
+		PROMPT+="\$(prompt_senpai_time)"
+	fi
+
   # Do not print user if it is disabled
 	if [[ $SENPAI_SHOW_USER == true ]]; then
 		PROMPT+="${brown}%n%f"
