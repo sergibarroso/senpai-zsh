@@ -15,6 +15,8 @@ k8s_info() {
 aws_info() {
   if [ ! -z ${AWS_PROFILE} ]; then
     echo " %F{214}ⓦ ${AWS_PROFILE}%f"
+  elif [ ! -z ${AWS_DEFAULT_PROFILE} ]; then
+    echo " %F{214}ⓦ ${AWS_DEFAULT_PROFILE}%f"
   fi
 }
 
