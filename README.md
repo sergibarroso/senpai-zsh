@@ -1,7 +1,9 @@
 # Senpai - 先輩
-Senpai is a ZSH clean prompt theme for Devops
+Senpai is a ZSH clean prompt theme for Devops.
 
-<img src="senpai_cmd_screenshot.png" width="864">
+<img src="senpai_cmd_dark_screenshot.png" width="864">
+
+<img src="senpai_cmd_white_screenshot.png" width="864">
 
 ## But why?
 
@@ -51,6 +53,7 @@ You then need to select this theme in your ~/.zimrc:
 
 You can add these values which are self-explanatory into your `~/.zshrc` file. By default all options are enabled.
 
+### `SENPAI_SHOW_TIME`
 ### `SENPAI_SHOW_USER`
 ### `SENPAI_SHOW_PATH`
 ### `SENPAI_SHOW_GIT`
@@ -77,10 +80,19 @@ prompt senpai
 [![asciicast](https://asciinema.org/a/thUXMMyOXY9E1VH0dEujypUw7.png)](https://asciinema.org/a/thUXMMyOXY9E1VH0dEujypUw7)
 
 ## ToDo
-- Add color scheme to white console
+- Check if Git module is available before enabling
+- ~~Add color scheme to white console~~
 - ~~Add modules enable/disable through config file and/or env vars~~
 
 ## Changelog
+
+### v0.5
+- Added white color scheme
+- Fixed color variables used across all functions
+
+### v0.4
+- Added timestamp
+- Now AWS profile also checks `AWS_DEFAULT_PROFILE`
 
 ### v0.3
 - Added customizable prompt options

@@ -7,16 +7,16 @@ k8s_info() {
   if [ -f "$HOME/.kube/config" ]; then
     k8s_context=$(awk '/current-context/{print $2}' $HOME/.kube/config)
     if [ ! -z ${k8s_context} ]; then
-      echo " %F{74}⎈ ${k8s_context}%f"
+      echo " ${cyan}⎈ ${k8s_context}%f"
     fi
   fi
 }
 
 aws_info() {
   if [ ! -z ${AWS_PROFILE} ]; then
-    echo " %F{214}ⓦ ${AWS_PROFILE}%f"
+    echo " ${yellow}ⓦ ${AWS_PROFILE}%f"
   elif [ ! -z ${AWS_DEFAULT_PROFILE} ]; then
-    echo " %F{214}ⓦ ${AWS_DEFAULT_PROFILE}%f"
+    echo " ${yellow}ⓦ ${AWS_DEFAULT_PROFILE}%f"
   fi
 }
 
@@ -24,7 +24,7 @@ azure_info() {
   if [ -f "$HOME/.azure/config" ]; then
     azure_cloud=$(awk '/name/{print tolower($3)}' $HOME/.azure/config)
     if [ ! -z ${azure_cloud} ]; then
-      echo " %F{45}ⓐ ${azure_cloud}%f"
+      echo " ${blue}ⓐ ${azure_cloud}%f"
     fi
   fi
 }
@@ -34,7 +34,7 @@ gcp_info() {
     gcp_profile=$(cat $HOME/.config/gcloud/active_config)
     gcp_project=$(awk '/project/{print $3}' $HOME/.config/gcloud/configurations/config_$gcp_profile)
     if [ ! -z ${gcp_project} ]; then
-      echo " %F{34}ⓖ ${gcp_project}%f"
+      echo " ${darkgreen}ⓖ ${gcp_project}%f"
     fi
   fi
 }
@@ -63,13 +63,14 @@ prompt_senpai_precmd() {
 }
 
 prompt_senpai_time() {
-  print -n "[%F{white}%*] "
+  print -n "[${white}%*] "
 }
 
 prompt_senpai_setup() {
-  
+
   # Set default values
   [[ -n ${VIRTUAL_ENV} ]] && export VIRTUAL_ENV_DISABLE_PROMPT=1
+  set_default SENPAI_THEME_DARK true
   set_default SENPAI_SHOW_TIME  true
   set_default SENPAI_SHOW_USER  true
   set_default SENPAI_SHOW_PATH  true
@@ -79,39 +80,56 @@ prompt_senpai_setup() {
   set_default SENPAI_SHOW_GCP   true
   set_default SENPAI_SHOW_AZURE true
 
-  local black
-  local blue
-  local brown
-  local cyan
-  local green
-  local magenta
-  local purple
-  local red
-  local white
-  local yellow
-  # use extended color palette if available
-  if [[ -n ${terminfo[colors]} && ${terminfo[colors]} -ge 256 ]]; then
-    black='%F{0}'
-    blue='%F{33}'
-    brown='%F{166}'
-    cyan='%F{37}'
-    green='%F{64}'
-    magenta='%F{134}'
-    purple='%F{134}'
-    red='%F{124}'
-    white='%F{15}'
-    yellow='%F{136}'
+  typeset -g blue
+  typeset -g brown
+  typeset -g cyan
+  typeset -g green
+  typeset -g magenta
+  typeset -g red
+  typeset -g white
+  typeset -g yellow
+
+  # Choose dark or bright color schema and use extended color palette if available
+  if  [[ $SENPAI_THEME_DARK == true ]]; then
+    if [[ -n ${terminfo[colors]} && ${terminfo[colors]} -ge 256 ]]; then
+      blue='%F{33}'
+      brown='%F{166}'
+      cyan='%F{74}'
+      green='%F{64}'
+      darkgreen='%F{34}'
+      red='%F{9}'
+      darkred='%F{160}'
+      white='%F{15}'
+      yellow='%F{214}'
+    else
+      blue='%F{blue}'
+      brown='%F{brown}'
+      cyan='%F{cyan}'
+      green='%F{green}'
+      red='%F{red}'
+      white='%F{white}'
+      yellow='%F{yellow}'
+    fi
   else
-    black='%F{black}'
-    blue='%F{blue}'
-    brown='%F{brown}'
-    cyan='%F{cyan}'
-    green='%F{green}'
-    magenta='%F{magenta}'
-    purple='%F{purple}'
-    red='%F{red}'
-    white='%F{white}'
-    yellow='%F{yellow}'
+    if [[ -n ${terminfo[colors]} && ${terminfo[colors]} -ge 256 ]]; then
+      blue='%F{21}'
+      brown='%F{208}'
+      cyan='%F{39}'
+      green='%F{64}'
+      darkgreen='%F{34}'
+      red='%F{9}'
+      darkred='%F{160}'
+      white='%F{0}'
+      yellow='%F{214}'
+    else
+      blue='%F{blue}'
+      brown='%F{brown}'
+      cyan='%F{cyan}'
+      green='%F{green}'
+      red='%F{red}'
+      white='%F{black}'
+      yellow='%F{yellow}'
+    fi
   fi
 
   autoload -Uz add-zsh-hook
@@ -128,7 +146,7 @@ prompt_senpai_setup() {
   zstyle ':zim:git-info:unindexed' format "${brown}●"
   zstyle ':zim:git-info:indexed' format "${green}●"
   zstyle ':zim:git-info:untracked' format "${red}●"
-  zstyle ':zim:git-info:keys' format 'prompt' "${white}(%b%c%I%i%u%f)%s"
+  zstyle ':zim:git-info:keys' format 'prompt' "${white}(%b%c%I%i%u${white})%f%s"
 
   # Init PROMPT
   PROMPT=""
@@ -182,7 +200,7 @@ prompt_senpai_setup() {
 	fi
   
   # Add the final prompt
-  PROMPT+=" %(?.%F{white}.%F{red})❯%f "
+  PROMPT+=" %(?.${white}.${darkred})❯%f "
   RPROMPT=''
 }
 
