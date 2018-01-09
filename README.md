@@ -86,6 +86,9 @@ prompt senpai
 
 ## Changelog
 
+### v0.6
+- Fixed issues with Kubernetes context when KUBECONFIG is defined
+
 ### v0.5
 - Added white color scheme
 - Fixed color variables used across all functions

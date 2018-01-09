@@ -4,11 +4,13 @@
 # MIT License
 
 k8s_info() {
-  if [ -f "$HOME/.kube/config" ]; then
+  if [ ! -z ${KUBECONFIG} ]; then
+    k8s_context=$(awk '/current-context/{print $2}' $KUBECONFIG)
+  elif [ -f "$HOME/.kube/config" ]; then
     k8s_context=$(awk '/current-context/{print $2}' $HOME/.kube/config)
-    if [ ! -z ${k8s_context} ]; then
-      echo " ${cyan}⎈ ${k8s_context}%f"
-    fi
+  fi
+  if [ ! -z ${k8s_context} ]; then
+    echo " ${cyan}⎈ ${k8s_context}%f"
   fi
 }
 
