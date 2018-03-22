@@ -116,9 +116,9 @@ prompt_senpai_setup() {
     if [[ -n ${terminfo[colors]} && ${terminfo[colors]} -ge 256 ]]; then
       blue='%F{21}'
       brown='%F{208}'
-      cyan='%F{39}'
-      green='%F{64}'
-      darkgreen='%F{34}'
+      cyan='%F{33}'
+      green='%F{76}'
+      darkgreen='%F{70}'
       red='%F{9}'
       darkred='%F{160}'
       white='%F{0}'
