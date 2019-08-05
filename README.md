@@ -32,7 +32,7 @@ $ git clone https://github.com/hiroru/senpai-zsh.git ~/.oh-my-zsh/custom/themes/
 ```
 You then need to select this theme in your ~/.zshrc:
 
-ZSH_THEME="senpai-zsh/senpai"
+ZSH_THEME="hiroru/senpai-zsh"
 
 ### Install for ZIM
 To install this theme for use in ZIM, clone this repository into your ZIM prompt/external-themes directory.
